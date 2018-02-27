@@ -4,8 +4,8 @@
 from typing import List
 from botbuilder.schema import Activity, ConversationReference
 
-# from .bot_adapter import BotAdapter  #BotAdapter shouldn't depend on Context and vice versa, otherwise, import errors.
-
+# from .bot_adapter import BotAdapter
+from .assertions import BotAssert
 
 class BotContext(object):
     def __init__(self, adapter, activity: Activity=None, reference: ConversationReference=None):
@@ -30,7 +30,10 @@ class BotContext(object):
                 reply.speak = speak
             self.responses.append(reply)
         elif activity:
-            # BotAssert.activity_not_null(activity)
+            BotAssert.activity_not_null(activity)
             self.responses.append(activity)
         return self
 
+    def reply_with_activity(self, activity: Activity) -> 'BotContext':
+        if not isinstance(activity, Activity):
+            raise TypeError('activity provided must')

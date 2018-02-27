@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from typing import List
 from botbuilder.schema import Activity, ConversationReference
 
-# from .assertions import BotAssert
+from .assertions import BotAssert
 from .bot_context import BotContext
 from .middleware import Middleware, MiddlewareSet, BindOutgoingResponsesMiddleware, TemplateManager
 
@@ -34,7 +34,7 @@ class BotAdapter(ABC):
     async def create_conversation_implementation(self): pass
 
     async def run_pipeline(self, context: BotContext, callback=None):
-        # BotAssert.context_not_null(context)
+        BotAssert.context_not_null(context)
 
         # print('Middleware: beginning pipeline for %s' % context.conversation_reference.activity_id)
         if self._loop.is_running():
@@ -51,7 +51,7 @@ class BotAdapter(ABC):
                     asyncio.ensure_future(callback(context))
             await asyncio.ensure_future(self._middleware_set.send_activity(context, context.responses or []))
             if context.responses:
-               await asyncio.ensure_future(self.send_activities_implementation(context, context.responses))
+                await asyncio.ensure_future(self.send_activities_implementation(context, context.responses))
         else:
             self._loop.run_until_complete(asyncio.ensure_future(self._middleware_set.context_created(context)))
 
@@ -65,11 +65,16 @@ class BotAdapter(ABC):
             else:
                 if callback and callable(callback):
                     self._loop.run_until_complete(asyncio.ensure_future(callback(context)))
-            self._loop.run_until_complete(asyncio.ensure_future(self._middleware_set.send_activity(context, context.responses or [])))
-            if context.responses:
-                self._loop.run_until_complete(asyncio.ensure_future(self.send_activities_implementation(context, context.responses)))
+            self._loop.run_until_complete(asyncio.ensure_future(
+                self._middleware_set.send_activity(context, context.responses or [])
+            ))
 
-        # print('Middleware: Ending Pipeline for %s' % context.conversation_reference.activity_id
+            if context.responses:
+                self._loop.run_until_complete(asyncio.ensure_future(
+                    self.send_activities_implementation(context, context.responses)
+                ))
+
+        # print('Middleware: Ending Pipeline for %s' % context.conversation_reference.activity_id)
 
     async def continue_conversation(self, reference: ConversationReference, callback):
         context = BotContext(self, reference=reference)
