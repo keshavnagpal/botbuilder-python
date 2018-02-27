@@ -29,7 +29,7 @@ class MySendActivityMiddleware(SendActivity):
                 context.reply('Welcome to the the echo bot!')
 
 
-bot = BotFrameworkAdapter('', '')
+bot = BotFrameworkAdapter(APP_ID, APP_PASSWORD)
 bot.register_middleware(MyContextCreatedMiddleware())
 bot.register_middleware(MyReceiveActivityMiddleware())
 
