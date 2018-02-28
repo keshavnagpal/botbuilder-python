@@ -3,7 +3,7 @@
 
 import asyncio
 from typing import List, Callable
-from botbuilder.schema import Activity, ActivityTypes
+from botbuilder.schema import Activity
 from botframework.connector import ConnectorClient
 from botframework.connector.auth import (MicrosoftAppCredentials,
                                          JwtTokenValidation, SimpleCredentialProvider)
@@ -50,14 +50,20 @@ class BotFrameworkAdapter(BotAdapter):
 
     async def send_activities_implementation(self, context: BotContext, activities: List[Activity]):
         for activity in activities:
-            # if activity and activity.type == ActivityTypes.delay.value:
-            #     pass
-            #     # sleep or something for activity.value
-            # else:
-            #     connector_client = ConnectorClient(self._credentials, activity.service_url)
-            #     connector_client.conversations.send_to_conversation(activity.conversation.id, activity)
-            connector_client = ConnectorClient(self._credentials, activity.service_url)
-            connector_client.conversations.send_to_conversation(activity.conversation.id, activity)
+            if activity and (activity.type == 'delay'):
+                loop = asyncio.get_event_loop()
+                try:
+                    delay_in_ms = float(activity.value)/1000
+                except TypeError:
+                    raise TypeError('Unexpected delay value passed. Expected number or str type.')
+                except AttributeError:
+                    raise Exception('activity.value was not found.')
+                else:
+                    if loop.is_running():
+                        await asyncio.sleep(delay_in_ms)
+            else:
+                connector_client = ConnectorClient(self._credentials, activity.service_url)
+                connector_client.conversations.send_to_conversation(activity.conversation.id, activity)
 
     def update_activity_implementation(self, context: BotContext, activity: Activity):
         try:
