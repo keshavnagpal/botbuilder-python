@@ -30,9 +30,9 @@ class BindOutgoingResponsesMiddleware(SendActivity):
         BotAssert.activity_list_not_null(activities)
 
         for activity in activities:
-            if str(activity.type).replace(' ', ''):
+            if str(activity.type).replace(' ', '') or not activity.type:
                 activity.type = ActivityTypes.message
-            BindOutgoingResponsesMiddleware.apply_conversation_reference(activity, context.conversation_reference)
+            BindOutgoingResponsesMiddleware.apply_conversation_reference(activity, context.reference)
 
     @staticmethod
     def apply_conversation_reference(activity: Activity, reference: ConversationReference) -> None:
