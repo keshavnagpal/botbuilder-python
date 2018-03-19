@@ -13,7 +13,7 @@ To get started see the [wiki](https://github.com/Microsoft/botbuilder-python/wik
 
 - [![PyPI version](https://badge.fury.io/py/botbuilder-core.svg)](https://badge.fury.io/py/botbuilder-core) botbuilder-core
 - [![PyPI version](https://badge.fury.io/py/botbuilder-schema.svg)](https://badge.fury.io/py/botbuilder-schema) botbuilder-schema
-- [![PyPI version](https://badge.fury.io/py/botframework-connector.svg)](https://badge.fury.io/py/botframework-connector) botframework-connecrtor
+- [![PyPI version](https://badge.fury.io/py/botframework-connector.svg)](https://badge.fury.io/py/botframework-connector) botframework-connector
 
 ## Contributing
 
